@@ -39,9 +39,10 @@ libModSecurityJNI_la_LDFLAGS = -module -avoid-version \
 endif
 
 if MACOSX
-libModSecurityJNI_la_LDFLAGS = -module -avoid-version \
+libModSecurityJNI_la_LDFLAGS = -avoid-version \
                            @APR_LDFLAGS@ @APU_LDFLAGS@ @APXS_LDFLAGS@ \
-                           @PCRE_LDFLAGS@ @LIBXML2_LDFLAGS@ @LUA_LDFLAGS@
+                           @PCRE_LDFLAGS@ @LIBXML2_LDFLAGS@ @LUA_LDFLAGS@ \
+                           -dynamiclib -install_name $(libdir)/libModSecurityJNI.dylib
 endif
 
 if SOLARIS
@@ -84,6 +85,15 @@ install-exec-hook: $(pkglib_LTLIBRARIES)
 	  install -D -m444 $(DESTDIR)$(pkglibdir)/$$base.so $(DESTDIR)$(APXS_MODULES)/$$base.so; \
 	done
 else
+if MACOSX
+install-exec-hook: $(pkglib_LTLIBRARIES)
+	@echo "Removing unused static libraries..."; \
+	for m in $(pkglib_LTLIBRARIES); do \
+	  base=`echo $$m | sed 's/\..*//'`; \
+	  rm -f $(DESTDIR)$(pkglibdir)/$$base.*a; \
+	  cp -p $(DESTDIR)$(pkglibdir)/$$base.dylib $(DESTDIR)$(APXS_MODULES); \
+	done
+else
 install-exec-hook: $(pkglib_LTLIBRARIES)
 	@echo "Removing unused static libraries..."; \
 	for m in $(pkglib_LTLIBRARIES); do \
@@ -91,4 +101,5 @@ install-exec-hook: $(pkglib_LTLIBRARIES)
 	  rm -f $(DESTDIR)$(pkglibdir)/$$base.*a; \
 	  cp -p $(DESTDIR)$(pkglibdir)/$$base.so $(DESTDIR)$(APXS_MODULES); \
 	done
+endif
 endif

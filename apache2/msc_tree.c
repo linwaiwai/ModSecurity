@@ -3,9 +3,9 @@
  * Copyright (c) 2004-2013 Trustwave Holdings, Inc. (http://www.trustwave.com/)
  *
  * You may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * If any of the files related to licensing are missing or if you have any
  * other questions related to licensing please contact Trustwave Holdings, Inc.
@@ -21,9 +21,16 @@
 #if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #endif
+
+/* 修改这部分代码 */
+#ifdef __APPLE__
+#include <arpa/inet.h>
+#else
 #if APR_HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
+#endif
+
 #include "apr_lib.h"
 #include "msc_util.h"
 #include "msc_tree.h"

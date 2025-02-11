@@ -10,6 +10,30 @@ If any of the files related to licensing are missing or if you have any
 other questions related to licensing please contact Trustwave Holdings, Inc.
 directly using the email address security@modsecurity.org.
 
+## 支持MacOS(arm64)动态链接库
+
+- 使用mac port安装缺失库文件，不要使用brew，因为有一部分brew库过时有一些没有arm64支持版本
+- libtoolize使用port install libtool安装，做一下链接
+```
+ln -s /opt/homebrew/bin/glibtoolize /usr/local/bin/libtoolize
+```
+
+# 编译指令：
+
+```
+autoreconf -fi
+./autogen.sh
+./configure --host=arm64-apple-darwin --enable-standalone-module \
+            --enable-java-module \
+            --with-pcre=/opt/local \
+            --with-apr=/opt/local \
+            --with-apu=/opt/local \
+            --enable-shared
+make clean
+make CFLAGS="-I$JAVA_HOME/include -I$JAVA_HOME/include/darwin"
+```
+
+# 编译成功之后在java/.libs目录下会生成libModSecurityJNI.dylib文件
 
 DOCUMENTATION
 
